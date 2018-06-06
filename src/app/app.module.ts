@@ -6,6 +6,10 @@ import {Component} from '@angular/core';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 
+import { MenuService } from './menu.service';
+
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 // tslint:disable-next-line:max-line-length
@@ -14,13 +18,15 @@ import {MatInputModule} from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialogModule, MatDialog, MatDialogRef } from '@angular/material/dialog';
+
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import { AppComponent, AddAMenuSectionDialogComponent } from './app.component';
+import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
+import { AddACategoryDialogComponent } from './add-a-category-dialog/add-a-category-dialog.component';
 
 const environment = {
   production: false,
@@ -47,10 +53,11 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    AddAMenuSectionDialogComponent,
-    NavComponent
+    NavComponent,
+    AddACategoryDialogComponent
   ],
   imports: [
+    FlexLayoutModule,
     MatButtonModule,
      MatMenuModule, 
      MatInputModule,
@@ -69,8 +76,8 @@ const routes: Routes = [
      RouterModule.forRoot(routes),
       LayoutModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule
   ],
-  providers: [],
-  entryComponents: [AddAMenuSectionDialogComponent],
+  providers: [MenuService],
+  entryComponents: [AddACategoryDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
