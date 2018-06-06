@@ -1,7 +1,10 @@
-import { Component, Inject, ViewChild} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { AfterContentInit, Component, OnInit, Inject, ViewChild} from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatGridList} from '@angular/material';
 
 import {MediaChange, ObservableMedia} from '@angular/flex-layout';
+
+import { MenuService, MenuCategory, MenuItem } from './menu.service';
+import { AddACategoryDialogComponent } from './add-a-category-dialog/add-a-category-dialog.component';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -18,80 +21,63 @@ import { Observable } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
+  itemForm: FormGroup;
+  restaurantId: string;
   menuSectionCollectionRef: AngularFirestoreCollection<any>;
   menuItemCollectionRef: AngularFirestoreCollection<any>;
   menuItems$: Observable<any[]>;
-
-  constructor(public dialog: MatDialog, private afs: AngularFirestore, private observableMedia: ObservableMedia) {
-    this.menuSectionCollectionRef = this.afs.collection<any>('menuSections');
-    this.menuItemCollectionRef = this.afs.collection<any>('menuitems');
-    this.menuItems$ = this.menuItemCollectionRef.valueChanges();
-  }
-  
-
-  addAMenuSectionDialog(): void {
-    let dialogRef = this.dialog.open(AddAMenuSectionDialogComponent, {
-      width: '75%',
-      position: { top: '0' },
-      data: { name: 'name', animal: 'animal' }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.addNewMenuItem('Apples');
-      //this.animal = result;
-    });
-  }
-
-  addNewMenuItem(name: string) {
-    if (name && name.trim().length) {
-      //this.menuItemCollectionRef.add({ name: name });
-    }
-  }
-}
-
-/**
- * Dialog Component
- */
-@Component({
-  selector: 'app-add-a-category-dialog',
-  templateUrl: './add-a-category-dialog.component.html',
-})
-export class AddAMenuSectionDialogComponent implements OnInit {
-  form: FormGroup;
+  menuSections$: Observable<any[]>;
   @ViewChild('grid') grid: MatGridList;
-  
-    gridByBreakpoint = {
-      xl: 8,
-      lg: 6,
-      md: 4,
-      sm: 2,
-      xs: 1
-    }
-  
 
   constructor(
-    public dialogRef: MatDialogRef<AddAMenuSectionDialogComponent>,
+    public dialog: MatDialog,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
-
-  onNoClick(): void {
-    this.dialogRef.close();
+     private afs: AngularFirestore,
+     private menuService: MenuService,
+     private observableMedia: ObservableMedia) {
+      this.menuItemCollectionRef = this.afs.collection<any>('menuItems');
+      this.menuItems$ = this.menuItemCollectionRef.valueChanges();
+      this.menuSections$ = this.menuService.getMenuCategories('0000');
   }
 
   ngOnInit() {
-    this.form = this.fb.group({
-        name: ['', [Validators.required]]
+    this.restaurantId = '0000';
+
+    this.itemForm = this.fb.group({
+      name: ['', Validators.required],
+      description: '',
+      restaurantId: this.restaurantId
     });
+  }
+
+  addAMenuSectionDialog(): void {
+    const addACategoryDialogRef = this.dialog.open(AddACategoryDialogComponent, {
+      width: '50%',
+      position: { top: '0' },
+      data: { name: '', restaurantId: '0000' }
+    });
+
+    addACategoryDialogRef.afterClosed().subscribe((category: MenuCategory) => {
+      this.addNewMenuCategory(category);
+    });
+
+  }
+
+  createNewMenuItem(menuItem: MenuItem): void {
+    console.log(menuItem);
+    this.menuService.addMenuItem(menuItem);
+    this.itemForm.reset();
+  }
+
+
+
+  addNewMenuCategory(menuCategory: MenuCategory) {
+    if (menuCategory) {
+      this.menuService.addMenuCategory({...menuCategory, ...{restaurantId: this.restaurantId});
+    }
+  }
 }
 
-save() {
-    this.dialogRef.close(this.form.value);
-}
 
-close() {
-    this.dialogRef.close();
-}
-}

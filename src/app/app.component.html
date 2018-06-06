@@ -1,3 +1,7 @@
+
+<router-outlet></router-outlet>
+
+
 <mat-toolbar color="accent">
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
@@ -20,56 +24,65 @@
 
 </mat-toolbar>
 
-<router-outlet></router-outlet>
 
-<mat-card>
-<mat-grid-list cols="3" rows="1"  #grid>
-  <mat-grid-tile>
-    <mat-list>
-      <h3 matSubheader>Menu Sections</h3>
-      <mat-list-item *ngFor="let category of ['Beer', 'Featured', 'Lunch']">
-          <button mat-button>{{ category }}</button>
-      </mat-list-item>
-
-      <mat-divider></mat-divider>
+<div fxLayout="row" fxLayout.xs="column"  fxLayoutAlign="center top"  class="row-example">
    
-      <mat-list-item class="list-actions">
-          <div class="flex-spacer"></div>
-          <button mat-icon-button color="accent" (click)="addAMenuSectionDialog()">
-              <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon> Add Section
-          </button>
-      </mat-list-item>
-    </mat-list>
-  </mat-grid-tile>
-
-  <mat-grid-tile>
-    <mat-list>
-      <h3 matSubheader>Items</h3>
-      <mat-list-item *ngFor="let item of menuItems$ | async">
-          <button mat-button>{{ item.name }}</button>
-      </mat-list-item>
-
-      <mat-divider></mat-divider>
-
-      <mat-list-item class="list-actions">
-          <div class="flex-spacer"></div>
-          <button mat-icon-button color="accent">
-              <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon> Add Item
-            </button>
-      </mat-list-item>
-    </mat-list>
-  </mat-grid-tile>
-
-  <mat-grid-tile>
-     <form class="example-form">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Favorite food" value="Sushi">
-        </mat-form-field>
-    </form>
+  
+  <div class="menu-editor-section" fxFlex="0 0 25%">
+            <mat-list>
+                <h3 matSubheader>Menu Sections</h3>
+                <mat-divider></mat-divider>
+                <a mat-list-item *ngFor="let section of menuSections$ | async">
+             
+                        <mat-icon matListIcon>restaurant_menu</mat-icon>
+                        <h4 matLine>{{section.name}}</h4>
+                        <!-- <p matLine class="demo-2"> {{section | json}} </p> -->
     
-  </mat-grid-tile>
+                </a>
+                <mat-divider></mat-divider>
+                <button mat-icon-button color="accent" (click)="addAMenuSectionDialog()">
+                    <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon> Add Section
+                </button>
+             </mat-list>
+    </div>
 
 
-</mat-grid-list>
-</mat-card>
+    <div class="menu-editor-section" fxFlex="0 0 25%">
+          <mat-list>
+              <h3 matSubheader>Items</h3>
+              <mat-divider></mat-divider>
+              <mat-list-item *ngFor="let item of menuItems$ | async">
+                 <mat-icon matListIcon>label_outline</mat-icon>
+                 <h4 matLine>{{item.name}}</h4>
+                 <p matLine class="demo-2"> {{ item.description }} </p>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <button mat-icon-button color="accent" (click)="addAMenuSectionDialog()">
+                  <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon> Add Item
+              </button>
+           </mat-list>
+    </div>
 
+
+    <div class="menu-editor-section" fxFlex="0 0 50%">
+        <mat-card>
+        <h3 matSubheader>Create</h3>
+   
+        <form class="example-form" [formGroup]="itemForm">
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Item Name" formControlName="name">
+          </mat-form-field>
+          <br/><br/>
+          <mat-form-field class="example-full-width">
+            <textarea matInput placeholder="Leave a description" formControlName="description"></textarea>
+          </mat-form-field>
+          <br/><br/>
+          <button mat-icon-button color="accent" (click)="createNewMenuItem(itemForm.value)">
+            <mat-icon>add</mat-icon> Add Item
+        </button>
+        </form>
+      </mat-card>
+    </div>
+
+
+</div>
