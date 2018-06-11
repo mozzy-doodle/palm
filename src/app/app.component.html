@@ -1,16 +1,12 @@
-
-<router-outlet></router-outlet>
-
-
 <mat-toolbar color="accent">
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     Palm
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>dialpad</mat-icon>
-        <span>Redial</span>
+      <button mat-menu-item [routerLink]="'/menu-editor'">
+        <mat-icon>restaurant</mat-icon>
+        <span>Menu Editor</span>
       </button>
       <button mat-menu-item disabled>
         <mat-icon>voicemail</mat-icon>
@@ -23,66 +19,4 @@
     </mat-menu>
 
 </mat-toolbar>
-
-
-<div fxLayout="row" fxLayout.xs="column"  fxLayoutAlign="center top"  class="row-example">
-   
-  
-  <div class="menu-editor-section" fxFlex="0 0 25%">
-            <mat-list>
-                <h3 matSubheader>Menu Sections</h3>
-                <mat-divider></mat-divider>
-                <a mat-list-item *ngFor="let section of menuSections$ | async">
-             
-                        <mat-icon matListIcon>restaurant_menu</mat-icon>
-                        <h4 matLine>{{section.name}}</h4>
-                        <!-- <p matLine class="demo-2"> {{section | json}} </p> -->
-    
-                </a>
-                <mat-divider></mat-divider>
-                <button mat-icon-button color="accent" (click)="addAMenuSectionDialog()">
-                    <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon> Add Section
-                </button>
-             </mat-list>
-    </div>
-
-
-    <div class="menu-editor-section" fxFlex="0 0 25%">
-          <mat-list>
-              <h3 matSubheader>Items</h3>
-              <mat-divider></mat-divider>
-              <mat-list-item *ngFor="let item of menuItems$ | async">
-                 <mat-icon matListIcon>label_outline</mat-icon>
-                 <h4 matLine>{{item.name}}</h4>
-                 <p matLine class="demo-2"> {{ item.description }} </p>
-              </mat-list-item>
-              <mat-divider></mat-divider>
-              <button mat-icon-button color="accent" (click)="addAMenuSectionDialog()">
-                  <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon> Add Item
-              </button>
-           </mat-list>
-    </div>
-
-
-    <div class="menu-editor-section" fxFlex="0 0 50%">
-        <mat-card>
-        <h3 matSubheader>Create</h3>
-   
-        <form class="example-form" [formGroup]="itemForm">
-          <mat-form-field class="example-full-width">
-            <input matInput placeholder="Item Name" formControlName="name">
-          </mat-form-field>
-          <br/><br/>
-          <mat-form-field class="example-full-width">
-            <textarea matInput placeholder="Leave a description" formControlName="description"></textarea>
-          </mat-form-field>
-          <br/><br/>
-          <button mat-icon-button color="accent" (click)="createNewMenuItem(itemForm.value)">
-            <mat-icon>add</mat-icon> Add Item
-        </button>
-        </form>
-      </mat-card>
-    </div>
-
-
-</div>
+<router-outlet></router-outlet>
