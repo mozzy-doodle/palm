@@ -1,0 +1,72 @@
+
+<div fxLayout="row" fxLayout.xs="column"  fxLayoutGap.xs="40px" fxLayoutAlign="center top"  class="row-example">
+
+   <div class="menu-editor-section" fxFlex="0 0 25%">
+             <mat-selection-list  (selectionChange)="handleSectionChange($event)">
+                 <h3 matSubheader>Menu Sections</h3>
+                 <mat-divider></mat-divider>
+                 <mat-list-option *ngFor="let section of restaurant?.menuSections">
+                         <h4 matLine>{{ section }}</h4>
+                 </mat-list-option>
+                 <mat-divider></mat-divider>
+              </mat-selection-list>
+              <!-- Add button section-->
+              <mat-list>
+                <mat-list-item fxFlex="grow"  (click)="addAMenuSectionDialog()">
+                    <mat-icon mat-list-icon  color="accent">add</mat-icon>
+                    <h4 mat-line>Add Section</h4>
+                </mat-list-item>
+              </mat-list>
+     </div>
+
+
+     <div class="menu-editor-section" fxFlex="0 0 25%">
+           <mat-list>
+               <h3 matSubheader>Items</h3>
+               <mat-divider></mat-divider>
+               <mat-list-item *ngFor="let item of menuItems">
+                  <mat-icon matListIcon>label_outline</mat-icon>
+                  <h4 matLine>{{item.name}}</h4>
+                  <p matLine class="demo-2"> {{ item.description }} </p>
+               </mat-list-item>
+               <mat-divider></mat-divider>
+            </mat-list>
+            <mat-list>
+                <mat-list-item fxFlex="grow"  (click)="addAMenuSectionDialog()">
+                    <mat-icon mat-list-icon  color="accent">add</mat-icon>
+                    <h4 mat-line>Add Item</h4>
+                </mat-list-item>
+              </mat-list>
+     </div>
+
+
+     <div class="menu-editor-section" fxFlex="0 0 50%">
+         <mat-card  fxLayout="row wrap">
+
+         <form class="example-form" [formGroup]="itemForm">
+           <div class="input-row">
+              <mat-form-field fxFlex>
+                  <input matInput placeholder="Item Name" formControlName="name">
+                </mat-form-field>
+           </div>
+
+           <div class="input-row">
+              <mat-form-field fxFlex>
+                  <textarea matInput placeholder="Leave a description" formControlName="description"></textarea>
+              </mat-form-field>
+           </div>
+
+
+           <button mat-icon-button color="accent" (click)="createNewMenuItem(itemForm.value)" fxFlex>
+             <mat-icon>add</mat-icon> Add Item
+          </button>
+         </form>
+       </mat-card>
+     </div>
+
+
+ </div>
+
+
+
+
