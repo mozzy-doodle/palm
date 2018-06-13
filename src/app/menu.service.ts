@@ -10,6 +10,7 @@ export interface MenuItem {
   description?: string;
   menuSection?: string;
   price?: string;
+  id?: string;
 }
 
 export interface MenuCategory {
@@ -59,15 +60,22 @@ export class MenuService {
     return this.auth.userAuthData.pipe(
       switchMap(user => {
         if (user) {
-          return this.afs.doc<Restaurant>(`restaurants/${user.restaurantId}`).collection('menuItems').valueChanges();
+         // return this.afs.doc<Restaurant>(`restaurants/${user.restaurantId}`).collection('menuItems').valueChanges();
+          return this.afs.doc<Restaurant>(`restaurants/${user.restaurantId}`).collection('menuItems').snapshotChanges().pipe(
+            map(actions => {
+              return actions.map(action => {
+                const data = action.payload.doc.data();
+                const id = action.payload.doc.id;
+                return { id, ...data };
+              });
+            }
+          ));
 
         } else {
           return of(null);
         }
       })
     );
-
-
    }
 
 
@@ -82,6 +90,12 @@ export class MenuService {
   addMenuItem(item: MenuItem) {
     if (item) {
       this.afs.collection('menuItems').add(item);
+    }
+  }
+
+  updateItem(item: MenuItem) {
+    if (item) {
+      this.restaurantDocRef.collection('menuItems').doc(item.id).update({name: item.name, description: item.description});
     }
   }
 

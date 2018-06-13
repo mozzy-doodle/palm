@@ -5,6 +5,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {CommonModule} from '@angular/common';
 
 // tslint:disable-next-line:max-line-length
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatButtonModule, MatMenuModule, MatCheckboxModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
@@ -31,6 +32,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
      MatCardModule,
      MatDialogModule,
      MatFormFieldModule,
+     MatSnackBarModule,
      MatCheckboxModule,
      MatGridListModule,
      FormsModule,
@@ -51,6 +53,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
      MatDialogModule,
      MatFormFieldModule,
      MatCheckboxModule,
+     MatSnackBarModule,
      MatGridListModule,
      MatDividerModule,
      FormsModule,
