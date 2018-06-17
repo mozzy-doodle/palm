@@ -1,5 +1,5 @@
 <div>
-<h1 mat-dialog-title>Add A Menu Section</h1>
+<h1 mat-dialog-title>{{ editing ? 'Update Section' : 'Add Section'}}</h1>
 <div mat-dialog-content  [formGroup]="categoryForm">
 
     <mat-form-field>
@@ -12,7 +12,7 @@
       <input matInput placeholder="Restaurant Id"
       formControlName="restaurantId" hidden aria-hidden="true">
     </mat-form-field> -->
-    
+
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]>Cancel</button>

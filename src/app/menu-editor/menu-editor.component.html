@@ -1,16 +1,76 @@
+<div fxLayout="row" fxLayoutAlign="center top" style="height: 100vh" fxShow.lt-sm fxHide.gt-xs>
 
-<div fxLayout="row" fxLayout.xs="column"  fxLayoutGap.xs="40px" fxLayoutAlign="center top"  class="row-example">
+    <mat-tab-group fxShow.lt-sm fxHide.gt-sm  fxFlex="0 0 100%">
+        <mat-tab label="Menu Sections">
+            <div class="menu-editor-section">
+                 <mat-list  (selectionChange)="onSectionChange($event)" >
+                    <mat-divider></mat-divider>
+                    <mat-button-toggle-group name="selectedSection" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onSectionChangeV2($event)">
+
+                        <mat-button-toggle [value]="section" *ngFor="let section of restaurant?.menuSections" [checked]="selectedSection === section">
+                          <span  fxFlex="0 0 80%">{{ section }}</span>
+
+                          <button fxFlex="0 0 20%" mat-icon-button color="accent" style="float: right" (click)="editMenuSectionDialog(section)">
+                            <mat-icon aria-label="Edit Section">edit</mat-icon>
+                          </button>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                    <mat-divider></mat-divider>
+                 </mat-list>
+                 <!-- Add button section-->
+                 <mat-list>
+                   <mat-list-item fxFlex="grow"  (click)="addAMenuSectionDialog()">
+                       <mat-icon mat-list-icon  color="accent">add</mat-icon>
+                       <h4 mat-line>Add Section</h4>
+                   </mat-list-item>
+                 </mat-list>
+        </div>
+        </mat-tab>
+        <mat-tab label="{{ selectedSection}} Items">
+            <div class="menu-editor-section" fxShow.lt-sm fxHide.gt-xs  fxFlex="0 0 100%">
+              <mat-list>
+                  <mat-button-toggle-group name="selectedItem" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onChangeItemMobile($event)">
+
+                      <mat-button-toggle [value]="item" *ngFor="let item of displayedItems" [checked]="item === selectedItem">
+                        <span  fxFlex="0 0 100%">{{ item.name }}</span>
+
+                      </mat-button-toggle>
+                  </mat-button-toggle-group>
+              </mat-list>
+
+                 <mat-list>
+                     <mat-list-item fxFlex="grow"  (click)="createItemDialog()">
+                         <mat-icon mat-list-icon  color="accent">add</mat-icon>
+                         <h4 mat-line>Add Item</h4>
+                     </mat-list-item>
+                   </mat-list>
+          </div>
+
+        </mat-tab>
+      </mat-tab-group>
+</div>
+
+
+<!-- Non Mobile view -->
+<div fxHide fxShow.gt-xs fxLayout="row" fxLayout.xs="column"  fxLayoutGap.xs="40px" fxLayoutAlign="center top"  class="row-example" style=" min-height: 100vh;">
 
    <div class="menu-editor-section" fxFlex="0 0 25%">
-             <mat-selection-list  (selectionChange)="onSectionChange($event)">
-                 <h3 matSubheader>Menu Sections</h3>
-                 <mat-divider></mat-divider>
-                 <mat-list-option *ngFor="let section of restaurant?.menuSections" [value]="section" [selected]="section === selectedSection">
-                         <h4 matLine>{{ section }}</h4>
-                 </mat-list-option>
-                 <mat-divider></mat-divider>
-              </mat-selection-list>
-              <!-- Add button section-->
+              <h3 matSubheader>Menu Sections</h3>
+            <mat-list  (selectionChange)="onSectionChange($event)" >
+
+                <mat-button-toggle-group name="selectedSection" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onSectionChangeV2($event)">
+
+                    <mat-button-toggle [value]="section" *ngFor="let section of restaurant?.menuSections"  [checked]="selectedSection === section">
+                      <span  fxFlex="0 0 80%">{{ section }}</span>
+
+                      <button fxFlex="0 0 20%" mat-icon-button color="accent" style="float: right" (click)="editMenuSectionDialog(section)">
+                        <mat-icon aria-label="Edit Section">edit</mat-icon>
+                      </button>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+                <mat-divider></mat-divider>
+            </mat-list>
+
               <mat-list>
                 <mat-list-item fxFlex="grow"  (click)="addAMenuSectionDialog()">
                     <mat-icon mat-list-icon  color="accent">add</mat-icon>
@@ -21,18 +81,19 @@
 
 
      <div class="menu-editor-section" fxFlex="0 0 25%">
-           <mat-selection-list  (selectionChange)="onChangeItem($event)">
-               <h3 matSubheader>Items</h3>
-               <mat-divider></mat-divider>
-               <mat-list-option *ngFor="let item of displayedItems" [value]="item" [selected]="item === selectedItem">
-                  <mat-icon matListIcon>label_outline</mat-icon>
-                  <h4 matLine>{{item.name}}</h4>
-                  <p matLine class="demo-2"> {{ item.description }} </p>
-               </mat-list-option>
-               <mat-divider></mat-divider>
-            </mat-selection-list>
+          <h3 matSubheader>{{ selectedSection }} <span *ngIf="selectedSection">&nbsp; items </span></h3>
+          <mat-list>
+              <mat-button-toggle-group name="selectedItem" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onChangeItem($event)">
+
+                  <mat-button-toggle [value]="item" *ngFor="let item of displayedItems"  [checked]="item === selectedItem">
+                    <span  fxFlex="0 0 100%">{{ item.name }}</span>
+
+                  </mat-button-toggle>
+              </mat-button-toggle-group>
+          </mat-list>
+
             <mat-list>
-                <mat-list-item fxFlex="grow"  (click)="createNewMenuItem()">
+                <mat-list-item fxFlex="grow"  (click)="onClickCreateNewItem()">
                     <mat-icon mat-list-icon  color="accent">add</mat-icon>
                     <h4 mat-line>Add Item</h4>
                 </mat-list-item>
@@ -41,6 +102,7 @@
 
 
      <div class="menu-editor-section" fxFlex="0 0 50%">
+
          <mat-card  fxLayout="row wrap">
          <form class="example-form" [formGroup]="itemForm">
            <div class="input-row">
@@ -55,8 +117,15 @@
               </mat-form-field>
            </div>
 
+           <div class="input-row">
+              <mat-form-field class="example-full-width" fxFlex>
+                  <span matPrefix>$ &nbsp;</span>
+                  <input type="text" matInput placeholder="Price"  formControlName="price">
+                </mat-form-field>
+           </div>
 
-           <button mat-raised-button color="primary" (click)="saveItem('Saved!', '')">Save Item</button>
+           <button mat-raised-button color="primary" (click)="saveItem()" *ngIf="updating">Save Item</button>
+           <button mat-raised-button color="primary" (click)="createItem()" *ngIf="!updating">Create Item</button>
          </form>
        </mat-card>
      </div>

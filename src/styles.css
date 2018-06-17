@@ -11,4 +11,5 @@
       overflow-y: scroll;
   }
 
+  ::ng-deep mat-pseudo-checkbox.mat-pseudo-checkbox{ display: none; }
 

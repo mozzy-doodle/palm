@@ -1,3 +1,19 @@
 .mat-pseudo-checkbox {
   display: hidden;
 }
+
+.mat-button-toggle-group {
+  width: 100%;
+}
+.mat-button-toggle-group, .mat-button-toggle-standalone {
+  box-shadow: none;
+}
+.mat-button-toggle-group {
+  box-shadow: none;
+}
+
+
+mat-button-toggle {
+  height: 50px;
+  color: rgba(0,0,0,.87);
+}

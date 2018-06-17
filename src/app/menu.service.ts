@@ -9,8 +9,11 @@ export interface MenuItem {
   name?: string;
   description?: string;
   menuSection?: string;
-  price?: string;
+  price?: number;
   id?: string;
+  averageRating?: number;
+  reviewCount?: number;
+  ratings: { fiveStar: number; fourStar: number; threeStar: number; twoStar: number; oneStar: number };
 }
 
 export interface MenuCategory {
@@ -79,23 +82,18 @@ export class MenuService {
    }
 
 
-  // Get all menu categories for a given restaurant
-  getMenuCategories(restaurantId?: string) {
-    if (this.userRestaurantId) {
-      const categoryRef = this.afs.collection('menuSections', ref => ref.where('restaurantId', '==', this.userRestaurantId));
-      return categoryRef.valueChanges().pipe(take(1));
+  updateItem(item: MenuItem, id: string) {
+    if (item) {
+      item.price = parseFloat(item.price.toString());
+      this.restaurantDocRef.collection('menuItems').doc(id)
+        .update({name: item.name, description: item.description, price: item.price});
     }
   }
 
-  addMenuItem(item: MenuItem) {
+  addItem(item: MenuItem) {
     if (item) {
-      this.afs.collection('menuItems').add(item);
-    }
-  }
-
-  updateItem(item: MenuItem) {
-    if (item) {
-      this.restaurantDocRef.collection('menuItems').doc(item.id).update({name: item.name, description: item.description});
+      item.price = parseFloat(item.price.toString());
+      this.restaurantDocRef.collection('menuItems').add(item);
     }
   }
 

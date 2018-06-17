@@ -11,29 +11,24 @@ import {FormBuilder, Validators, FormGroup} from '@angular/forms';
   templateUrl: './add-a-category-dialog.component.html',
   styleUrls: ['./add-a-category-dialog.component.css']
 })
-export class AddACategoryDialogComponent implements OnInit {
+export class AddACategoryDialogComponent {
 
   categoryForm: FormGroup;
-
+  editing: boolean;
 
   constructor(
       private fb: FormBuilder,
       private dialogRef: MatDialogRef<AddACategoryDialogComponent>,
       @Inject(MAT_DIALOG_DATA) {
-          name,
-          restaurantId
+          name
         }: MenuCategory ) {
+
+      this.editing = name !== '' && name !== null;
 
       this.categoryForm = fb.group({
           name: [name, Validators.required]
       });
-
   }
-
-  ngOnInit() {
-
-  }
-
 
   save() {
       this.dialogRef.close(this.categoryForm.value);
