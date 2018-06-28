@@ -8,12 +8,21 @@ import { AuthService } from './core/auth.service';
 export interface MenuItem {
   name?: string;
   description?: string;
+  creation?: any;
   menuSection?: string;
+  note?: string;
   price?: number;
   id?: string;
+  uid?: string;
   averageRating?: number;
   reviewCount?: number;
-  ratings: { fiveStar: number; fourStar: number; threeStar: number; twoStar: number; oneStar: number };
+  ratings?: { fiveStar: number; fourStar: number; threeStar: number; twoStar: number; oneStar: number };
+  status?: MenuItemStatus;
+}
+
+export interface MenuItemStatus {
+  entered: boolean;
+  rejected: boolean;
 }
 
 export interface MenuCategory {
@@ -63,6 +72,7 @@ export class MenuService {
     return this.auth.userAuthData.pipe(
       switchMap(user => {
         if (user) {
+        this.restaurantDocRef = this.afs.doc<Restaurant>(`restaurants/${user.restaurantId}`);
          // return this.afs.doc<Restaurant>(`restaurants/${user.restaurantId}`).collection('menuItems').valueChanges();
           return this.afs.doc<Restaurant>(`restaurants/${user.restaurantId}`).collection('menuItems').snapshotChanges().pipe(
             map(actions => {
@@ -81,12 +91,19 @@ export class MenuService {
     );
    }
 
-
+   /** Updates a menu item */
   updateItem(item: MenuItem, id: string) {
     if (item) {
       item.price = parseFloat(item.price.toString());
       this.restaurantDocRef.collection('menuItems').doc(id)
-        .update({name: item.name, description: item.description, price: item.price});
+        .update({name: item.name, description: item.description, price: item.price, menuSection: item.menuSection});
+    }
+  }
+
+  deleteItem(item: MenuItem, id: string) {
+    if (item) {
+      this.restaurantDocRef.collection('menuItems').doc(id)
+        .delete();
     }
   }
 
@@ -97,11 +114,32 @@ export class MenuService {
     }
   }
 
-  addMenuCategory(categories: string[]) {
-    if (this.restaurantDocRef && categories) {
-      console.log('update categories');
-      console.log(categories);
-     this.restaurantDocRef.update({menuSections: categories});
+  updateMenuSections(sections: string[]) {
+    if (this.restaurantDocRef && sections) {
+     this.restaurantDocRef.update({menuSections: sections});
     }
   }
+
+  /**
+   * For updating a name of a section and ensuring items in subcollection are up to date
+   * @param sections
+   * @param previousSectionName
+   */
+  updateSectionName(sections: string[], nameChange: { oldName: string; newName: string}): Observable<any> {
+    // tslint:disable-next-line:max-line-length
+    const itemsToUpdateRef = this.restaurantDocRef.collection('menuItems', ref => ref.where('menuSection', '==', nameChange.oldName));
+
+    // Update all items in this section with the new section name
+    return itemsToUpdateRef.snapshotChanges().pipe(
+      map(changes => {
+      return changes.map(a => {
+        const data = a.payload.doc.data();
+              const id = a.payload.doc.id;
+              return {id, ...data};
+          });
+      }
+    ));
+}
+
+
 }

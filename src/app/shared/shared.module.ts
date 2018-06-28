@@ -4,11 +4,16 @@ import { LayoutModule } from '@angular/cdk/layout';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {CommonModule} from '@angular/common';
 
+import { GroupPipe } from '../group.pipe';
+
+
 // tslint:disable-next-line:max-line-length
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatChipsModule} from '@angular/material/chips';
 
 // tslint:disable-next-line:max-line-length
 import {MatButtonModule, MatMenuModule, MatCheckboxModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule} from '@angular/material';
@@ -37,6 +42,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
      MatCardModule,
      MatExpansionModule,
      MatButtonToggleModule,
+     MatBadgeModule,
+     MatChipsModule,
      MatDialogModule,
      MatFormFieldModule,
      MatSnackBarModule,
@@ -50,7 +57,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
       MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule,
       MatButtonModule, MatMenuModule, MatCheckboxModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule
   ],
-  declarations: [],
+  declarations: [GroupPipe],
   exports: [
     LayoutModule,
     FlexLayoutModule,
@@ -62,9 +69,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
      MatCardModule,
      MatDialogModule,
      MatFormFieldModule,
+     GroupPipe,
+     MatChipsModule,
      MatButtonToggleModule,
      MatCheckboxModule,
      MatSnackBarModule,
+     MatBadgeModule,
      MatGridListModule,
      MatDividerModule,
      FormsModule,

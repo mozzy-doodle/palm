@@ -7,6 +7,7 @@ import { AuthGuard } from './core/auth.guard';
 import { SharedModule } from './shared/shared.module';
 
 import { MenuService } from './menu.service';
+import { OrderService } from './order.service';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -23,7 +24,8 @@ const routes: Routes = [
   {path: '', redirectTo: 'menu-editor', pathMatch: 'full'},
   { path: 'login', component: UserLoginComponent },
   { path: 'menu-editor', loadChildren: './menu-editor/menu-editor.module#MenuEditorModule'},
-  {path: 'admin', component: AppComponent, canActivate: [AuthGuard]}
+  { path: 'orders', loadChildren: './orders/orders.module#OrdersModule'},
+  { path: 'admin', component: AppComponent, canActivate: [AuthGuard] }
 
   // {path: '', component: HeroTopComponent},
   // {path: AppConfig.routes.heroes, loadChildren: './heroes/heroes.module#HeroesModule'},
@@ -41,7 +43,7 @@ const routes: Routes = [
     AddMenuItemDialogComponent,
     UserProfileComponent,
     UserLoginComponent,
-    UserFormComponent
+    UserFormComponent,
   ],
   imports: [
       CoreModule,
@@ -49,7 +51,7 @@ const routes: Routes = [
       BrowserAnimationsModule,
       RouterModule.forRoot(routes)
   ],
-  providers: [MenuService, AuthGuard],
+  providers: [MenuService, OrderService, AuthGuard],
   entryComponents: [AddACategoryDialogComponent, AddMenuItemDialogComponent],
   bootstrap: [AppComponent]
 })

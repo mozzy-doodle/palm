@@ -1,0 +1,42 @@
+
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import url('https://fonts.googleapis.com/css?family=Comfortaa');
+
+.flex-spacer {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  h3.mat-subheader {
+    padding: 8px;
+    font-family: sans-serif;
+    font-weight: 300;
+  }
+
+  .make-scrollable {
+      overflow-y: scroll;
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  .mat-button-toggle-group {
+    width: 100%;
+  }
+  .mat-button-toggle-group, .mat-button-toggle-standalone {
+    box-shadow: none;
+  }
+  .mat-button-toggle-group {
+    box-shadow: none;
+  }
+
+  mat-button-toggle {
+    height: 50px;
+    color: rgba(0,0,0,.87);
+  }
+
+
+
+  ::ng-deep mat-pseudo-checkbox.mat-pseudo-checkbox{ display: none; }

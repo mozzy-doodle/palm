@@ -1,4 +1,4 @@
-<mat-toolbar >
+<mat-toolbar  fxFlex="0 0 100%">
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>
@@ -7,6 +7,10 @@
       <button mat-menu-item [routerLink]="'/login'">
         <mat-icon>verified_user</mat-icon>
         <span>Sign-in</span>
+      </button>
+      <button mat-menu-item [routerLink]="'/orders'">
+        <mat-icon>local_activity</mat-icon>
+        <span>Orders</span>
       </button>
       <button mat-menu-item [routerLink]="'/menu-editor'">
         <mat-icon>restaurant</mat-icon>

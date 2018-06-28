@@ -6,13 +6,13 @@ import { AddACategoryDialogComponent } from '../add-a-category-dialog/add-a-cate
 
 import {MatSnackBar} from '@angular/material';
 
-
 import { MenuService, MenuCategory, MenuItem } from '../menu.service';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatGridList, MatDialog } from '@angular/material';
 import { AddMenuItemDialogComponent } from '../add-menu-item-dialog/add-menu-item-dialog.component';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -21,7 +21,6 @@ import { AddMenuItemDialogComponent } from '../add-menu-item-dialog/add-menu-ite
   styleUrls: ['./menu-editor.component.css']
 })
 export class MenuEditorComponent implements OnInit {
-
   title = 'app';
   itemForm: FormGroup;
   restaurantId: string;
@@ -67,7 +66,10 @@ export class MenuEditorComponent implements OnInit {
       if (data) {
         this.restaurant = data;
         this.sections = data.menuSections;
-        this.selectedSection = data.menuSections[0]; // Default to first one
+
+        if (!this.selectedSection) {
+          this.selectedSection = data.menuSections[0]; // Default to first one
+        }
       }
     });
   }
@@ -76,20 +78,13 @@ export class MenuEditorComponent implements OnInit {
     this.menuService.getMenuItems().subscribe((data) => {
       this.menuItems = data.filter((x) => x.menuSection);
       this.displayedItems = this.menuItems.filter((x: MenuItem) => x.menuSection === this.selectedSection);
-      this.selectedItem = this.displayedItems[0];
+
+      if (!this.selectedItem) {
+        this.selectedItem = this.displayedItems[0]; // Default to first one
+      }
     });
   }
 
-
-  onSectionChange(event) {
-      event.source.deselectAll();
-      event.option._setSelected(true);
-      this.updating = true;
-      this.selectedSection = event.option.value;
-      this.displayedItems = this.menuItems.filter((x: MenuItem) => x.menuSection === this.selectedSection);
-      this.selectedItem = this.displayedItems[0];
-      this.itemForm.patchValue(this.selectedItem);
-}
 
   onChangeItem(event) {
     this.updating = true;
@@ -97,14 +92,14 @@ export class MenuEditorComponent implements OnInit {
     this.itemForm.patchValue(this.selectedItem); // Update form on menu item section
   }
 
-  onChangeItemMobile(event) {
+  onChangeItemMobile(item: any) {
     this.updating = true;
-    this.selectedItem = event.value;
+    this.selectedItem = item;
     this.itemForm.patchValue(this.selectedItem); // Update form on menu item section
-    this.editMenuItemDialog(this.selectedItem);
+    this.openItemUpdateDialog(this.selectedItem);
   }
 
-  editMenuItemDialog(item: MenuItem): void {
+  openItemUpdateDialog(item: MenuItem): void {
     const editItemDialog = this.dialog.open(AddMenuItemDialogComponent, {
       data: item
     });
@@ -136,14 +131,47 @@ export class MenuEditorComponent implements OnInit {
     });
   }
 
-  editMenuSectionDialog(section: string): void {
-    const addACategoryDialogRef = this.dialog.open(AddACategoryDialogComponent, {
+  editSectionDialog(section: string): void {
+    const previousSectionName = section;
+    const editSectionDialogRef = this.dialog.open(AddACategoryDialogComponent, {
       data: { name: section }
     });
 
-    addACategoryDialogRef.afterClosed().subscribe((category: MenuCategory) => {
-      // this.addNewMenuCategory(category);
+    editSectionDialogRef.afterClosed().subscribe((newSectionName: { name: string }) => {
+
+      if (newSectionName && previousSectionName && newSectionName.name) {
+
+        const newName = newSectionName.name;
+
+
+        // tslint:disable-next-line:max-line-length
+        this.menuService.updateSectionName(this.restaurant.menuSections, { oldName: previousSectionName, newName: newName }).pipe(take(1)).subscribe(items => {
+
+          items.forEach(job => {
+            if (job.menuSection === previousSectionName) {
+              job.menuSection = newName;
+              this.menuService.updateItem(job, job.id);
+            }
+          });
+          this.selectedSection = newName;
+          // Update section name in memory
+          this.restaurant.menuSections = this.restaurant.menuSections.map((s: any) => {
+            if (s === previousSectionName) {
+              s  = newName;
+            }
+            return s;
+          });
+          this.menuService.updateMenuSections(this.restaurant.menuSections);
+
+         });
+
+      }
+
+        // this.menuService.updateMenuSections(this.restaurant.menuSections);
+
     });
+
+
   }
 
 
@@ -158,17 +186,27 @@ export class MenuEditorComponent implements OnInit {
   addNewMenuCategory(menuCategory: MenuCategory) {
     if (menuCategory.name && this.restaurant) {
       this.restaurant.menuSections.push(menuCategory.name);
-      this.menuService.addMenuCategory(this.restaurant.menuSections);
+      this.menuService.updateMenuSections(this.restaurant.menuSections);
     }
   }
 
   saveItem(item?: MenuItem) {
     if (item) {
-      this.menuService.updateItem(item, this.selectedItem.id);
+      const itemToUpdate = {...this.selectedItem, ...item};
+      this.menuService.updateItem(itemToUpdate, this.selectedItem.id);
     } else {
-      this.menuService.updateItem(this.itemForm.value, this.selectedItem.id);
+      const itemToUpdate = {...this.selectedItem, ...this.itemForm.value};
+      this.menuService.updateItem(itemToUpdate, this.selectedItem.id);
     }
-    this.snackBar.open('Saved item changes!', '', {
+    this.snackBar.open('Item saved!', '', {
+      duration: 2000,
+    });
+  }
+
+  deleteItem(item?: MenuItem) {
+    this.menuService.deleteItem(this.itemForm.value, this.selectedItem.id);
+    const deleteMessage = 'Deleted ' + this.selectedItem.name.toString();
+    this.snackBar.open(deleteMessage, '', {
       duration: 2000,
     });
   }
@@ -179,8 +217,8 @@ export class MenuEditorComponent implements OnInit {
       this.menuService.addItem(item);
     } else {
       const newEmptyItem: MenuItem = {
-        name: null,
-        price: null,
+        name: '',
+        price: 0,
         ratings: {
           fiveStar: 0,
           fourStar: 0,

@@ -3,14 +3,14 @@
     <mat-tab-group fxShow.lt-sm fxHide.gt-sm  fxFlex="0 0 100%">
         <mat-tab label="Menu Sections">
             <div class="menu-editor-section">
-                 <mat-list  (selectionChange)="onSectionChange($event)" >
+                 <mat-list>
                     <mat-divider></mat-divider>
                     <mat-button-toggle-group name="selectedSection" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onSectionChangeV2($event)">
 
                         <mat-button-toggle [value]="section" *ngFor="let section of restaurant?.menuSections" [checked]="selectedSection === section">
                           <span  fxFlex="0 0 80%">{{ section }}</span>
 
-                          <button fxFlex="0 0 20%" mat-icon-button color="accent" style="float: right" (click)="editMenuSectionDialog(section)">
+                          <button fxFlex="0 0 20%" mat-icon-button color="accent" style="float: right" (click)="editSectionDialog(section)">
                             <mat-icon aria-label="Edit Section">edit</mat-icon>
                           </button>
                         </mat-button-toggle>
@@ -29,12 +29,15 @@
         <mat-tab label="{{ selectedSection}} Items">
             <div class="menu-editor-section" fxShow.lt-sm fxHide.gt-xs  fxFlex="0 0 100%">
               <mat-list>
-                  <mat-button-toggle-group name="selectedItem" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onChangeItemMobile($event)">
+                  <mat-button-toggle-group name="selectedItem" aria-label="Font Style" [multiple]="false" [vertical]="true"  >
 
-                      <mat-button-toggle [value]="item" *ngFor="let item of displayedItems" [checked]="item === selectedItem">
-                        <span  fxFlex="0 0 100%">{{ item.name }}</span>
+                    <ng-container *ngFor="let item of displayedItems">
+                        <mat-button-toggle [value]="item"  [checked]="item === selectedItem" (click)="onChangeItemMobile(item)">
+                            <span  fxFlex="0 0 100%">{{ item.name }}</span>
 
-                      </mat-button-toggle>
+                          </mat-button-toggle>
+                    </ng-container>
+
                   </mat-button-toggle-group>
               </mat-list>
 
@@ -55,15 +58,15 @@
 <div fxHide fxShow.gt-xs fxLayout="row" fxLayout.xs="column"  fxLayoutGap.xs="40px" fxLayoutAlign="center top"  class="row-example" style=" min-height: 100vh;">
 
    <div class="menu-editor-section" fxFlex="0 0 25%">
-              <h3 matSubheader>Menu Sections</h3>
-            <mat-list  (selectionChange)="onSectionChange($event)" >
+            <h3 matSubheader>Menu Sections</h3>
+            <mat-list>
 
                 <mat-button-toggle-group name="selectedSection" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onSectionChangeV2($event)">
 
                     <mat-button-toggle [value]="section" *ngFor="let section of restaurant?.menuSections"  [checked]="selectedSection === section">
                       <span  fxFlex="0 0 80%">{{ section }}</span>
 
-                      <button fxFlex="0 0 20%" mat-icon-button color="accent" style="float: right" (click)="editMenuSectionDialog(section)">
+                      <button fxFlex="0 0 20%" mat-icon-button color="accent" style="float: right" (click)="editSectionDialog(section)">
                         <mat-icon aria-label="Edit Section">edit</mat-icon>
                       </button>
                     </mat-button-toggle>
@@ -81,7 +84,7 @@
 
 
      <div class="menu-editor-section" fxFlex="0 0 25%">
-          <h3 matSubheader>{{ selectedSection }} <span *ngIf="selectedSection">&nbsp; items </span></h3>
+          <h3 matSubheader>{{ selectedSection }} <span *ngIf="selectedSection">&nbsp;Items </span></h3>
           <mat-list>
               <mat-button-toggle-group name="selectedItem" aria-label="Font Style" [multiple]="false" [vertical]="true"  (change)="onChangeItem($event)">
 
@@ -90,6 +93,7 @@
 
                   </mat-button-toggle>
               </mat-button-toggle-group>
+              <mat-divider></mat-divider>
           </mat-list>
 
             <mat-list>
@@ -124,8 +128,14 @@
                 </mat-form-field>
            </div>
 
-           <button mat-raised-button color="primary" (click)="saveItem()" *ngIf="updating">Save Item</button>
-           <button mat-raised-button color="primary" (click)="createItem()" *ngIf="!updating">Create Item</button>
+           <div fxLayout="row" fxLayoutGap="20px">
+              <button mat-icon-button  fxFlex *ngIf="updating">
+                  <mat-icon aria-label="Delete" (click)="deleteItem()">delete</mat-icon> Delete
+                </button>
+               <button mat-raised-button color="primary" (click)="saveItem()" *ngIf="updating">Save Item</button>
+               <button mat-raised-button color="primary" (click)="createItem()" *ngIf="!updating">Create Item</button>
+            </div>
+
          </form>
        </mat-card>
      </div>
