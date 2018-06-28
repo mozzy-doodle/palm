@@ -30,18 +30,33 @@ export class AuthService {
     private router: Router
   ) {
 
-    //// Get auth data, then get firestore user document || null
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap((user) => {
-        if (user) {
-          return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-        } else {
-          return of(null);
-        }
-      })
+
+
+      //// Get auth data, then get firestore user document || null
+      this.user$ = this.afAuth.authState.pipe(
+        switchMap(user => {
+          if (user) {
+            return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+          } else {
+            return of(null);
+          }
+        })
       );
 
-      // Set auth data behavior subject
+
+
+    //// Get auth data, then get firestore user document || null
+    // this.user$ = this.afAuth.authState.pipe(
+    //   switchMap((user) => {
+    //     if (user) {
+    //       return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+    //     } else {
+    //       return of(null);
+    //     }
+    //   })
+    //   );
+
+    //   // Set auth data behavior subject
       this.user$.subscribe(user => {
         console.log(user);
         this.userAuthData.next(user);

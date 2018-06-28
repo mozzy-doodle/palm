@@ -1,21 +1,29 @@
-<mat-toolbar color="accent">
+<mat-toolbar  fxFlex="0 0 100%">
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>
-    Palm
+    <div id="logo-text">Palm</div>
     <mat-menu #menu="matMenu">
+      <button mat-menu-item [routerLink]="'/login'">
+        <mat-icon>verified_user</mat-icon>
+        <span>Sign-in</span>
+      </button>
+      <button mat-menu-item [routerLink]="'/orders'">
+        <mat-icon>local_activity</mat-icon>
+        <span>Orders</span>
+      </button>
       <button mat-menu-item [routerLink]="'/menu-editor'">
         <mat-icon>restaurant</mat-icon>
         <span>Menu Editor</span>
       </button>
-      <button mat-menu-item disabled>
+      <!-- <button mat-menu-item disabled>
         <mat-icon>voicemail</mat-icon>
         <span>Check voicemail</span>
-      </button>
-      <button mat-menu-item>
+      </button> -->
+      <!-- <button mat-menu-item>
         <mat-icon>notifications_off</mat-icon>
         <span>Disable alerts</span>
-      </button>
+      </button> -->
     </mat-menu>
 
 </mat-toolbar>

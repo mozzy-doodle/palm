@@ -1,0 +1,99 @@
+<!-- Non Mobile view -->
+<div fxHide fxShow.gt-xs fxLayout="row" fxLayout.xs="column"  fxLayoutGap.xs="40px" fxLayoutAlign="center top"  class="row-example" style=" min-height: 100vh;">
+
+    <div  fxFlex="0 0 40%">
+      <mat-tab-group>
+          <mat-tab label="Active ({{ openOrders?.length }})" (selectedTabChange)="changeTab($event)">
+            <div class="demo-tab-content">
+              <!-- List orders-->
+                <mat-list>
+                    <mat-button-toggle-group name="selectedSection" aria-label="Font Style" [multiple]="false" [vertical]="true" (change)="onTableSelection($event)">
+                        <mat-button-toggle [value]="order" *ngFor="let order of openOrders" [checked]="selectedOrder === order">
+                              Table #{{ order.tableId }}
+                              <div class="float-right">
+                                  <div *ngIf="order.orderStatus.readyForBill">
+                                      <span matBadge="!" matBadgeOverlap="false" color="warn" matBadgeColor="warn">Ready For Bill</span>
+                                  </div>
+                              </div>
+                        </mat-button-toggle>
+
+                    </mat-button-toggle-group>
+                    <mat-divider></mat-divider>
+                </mat-list>
+            </div>
+          </mat-tab>
+          <mat-tab label="Completed ({{ completedOrders?.length }})">
+              <div class="demo-tab-content">
+
+                  <!-- List orders-->
+                  <mat-list>
+                      <mat-button-toggle-group name="selectedSection" aria-label="Font Style" [multiple]="false" [vertical]="true" (change)="onTableSelection($event)">
+                          <mat-button-toggle [value]="order" *ngFor="let order of completedOrders" [checked]="selectedOrder === order">
+                                Table #{{ order.tableId }}
+                                <div class="float-right">
+                                    <div *ngIf="order.orderStatus.readyForBill">
+                                        <span matBadge="!" matBadgeOverlap="false" color="warn" matBadgeColor="warn">Ready For Bill</span>
+                                    </div>
+                                </div>
+                          </mat-button-toggle>
+
+                      </mat-button-toggle-group>
+                      <mat-divider></mat-divider>
+                  </mat-list>
+              </div>
+          </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <!-- Active order shown on right hand side-->
+    <div  fxFlex="0 0 60%">
+      <mat-card style="min-height: 90vh">
+          <h3 matSubheader>Table #{{ selectedOrder?.tableId }} at {{ selectedOrder?.dateString }}</h3>
+          <button mat-raised-button color="accent" (click)="updateOrderStatus(selectedOrder, !selectedOrder.active)" *ngIf="selectedOrder?.active; else completedMessage">Mark as completed</button>
+          <ng-template #completedMessage><h3>Order completed</h3></ng-template>
+          <mat-accordion [multi]="true">
+
+              <div *ngFor="let userOrder of selectedOrder?.items | group:'uid'">
+
+              <mat-expansion-panel (opened)="userOrder.panelOpen = true"
+                                   (closed)="userOrder.panelOpen = false" [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>face</mat-icon> &nbsp; {{ userOrder?.value[0]?.username }}'s Order ({{  userOrder?.value?.length }} items)
+                  </mat-panel-title>
+                  <mat-panel-description>
+                  {{ userOrder?.panelOpen ? 'minimize' : 'show'}} order
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-list>
+                    <mat-list-item *ngFor="let item of userOrder?.value" fxFlex="0 0 100%">
+                      <h4 matLine  fxFlex="0 0 55%">{{ item.name }} ${{ item.price }}</h4>
+                      <mat-checkbox  fxFlex="0 0 20%"
+                          class="example-margin"
+                          (change)="updateItemStatus($event, item, selectedOrder)"
+                          [(ngModel)]="item.status.entered"
+                          [labelPosition]="'after'"
+                          [indeterminate]="item.status.rejected"
+                          [disabled]="item.status.rejected || !selectedOrder?.active">
+                        <div *ngIf="!item.status.rejected; else rejectedLabel">{{ item.status.entered ? 'Done!' : 'Mark as done?'}}</div>
+                        <ng-template #rejectedLabel>Rejected</ng-template>
+                      </mat-checkbox>
+
+                      <!-- <button mat-raised-button color="warn" fxFlex="0 0 25%" (click)="rejectItemInOrder(item, selectedOrder)" >Reject</button> -->
+
+                    </mat-list-item>
+
+                </mat-list>
+                <br/><br/>
+
+              </mat-expansion-panel>
+
+            </div>
+            </mat-accordion>
+      </mat-card>
+
+  </div>
+
+
+

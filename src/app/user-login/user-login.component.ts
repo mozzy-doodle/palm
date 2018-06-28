@@ -44,7 +44,7 @@ export class UserLoginComponent {
   /// Shared
   private afterSignIn() {
     // Do after login stuff here, such router redirects, toast messages, etc.
-    this.router.navigate(['/']);
+    // this.router.navigate(['menu-editor']);
   }
 
 }

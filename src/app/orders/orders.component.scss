@@ -1,6 +1,4 @@
-.mat-pseudo-checkbox {
-  display: hidden;
-}
+@import "../../variables.scss";
 
 .mat-button-toggle-group {
   width: 100%;
@@ -12,7 +10,12 @@
   box-shadow: none;
 }
 
-mat-button-toggle {
+.mat-button-toggle-checked .mat-card{
+  border: 2px solid $accent;
+}
+
+
+.mat-button-toggle, .mat-button-toggle-label-content {
   height: 50px;
   color: rgba(0,0,0,.87);
 }

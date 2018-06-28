@@ -1,0 +1,21 @@
+@import '../variables.scss';
+
+.list-actions {
+    align-items: center;
+}
+
+mat-toolbar {
+  margin: -8px -8px 0px -8px  !important;
+  border-top: 2px solid $accent;
+  padding-left: 0px;
+  padding-right: 0px;
+  max-width: 100vw !important;
+  min-width: 100vw !important;
+  width: 100vw !important;
+}
+
+#logo-text {
+  color: $accent;
+  font-size: 32px;
+  font-family: 'Comfortaa', cursive;
+}
